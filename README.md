@@ -15,5 +15,6 @@ Webapp for automated sensor reading using a Raspberry Pi. <b>Datalogger</b> capt
 	* `TOMCAT7_USER=root`
 	* `TOMCAT7_GROUP=root`
 4. Restart Tomcat: `sudo service tomcat7 restart`
+
 <h5>Deploy</h5>
 Deploy <b>Datalogger</b> by either copying the <i>datalogger.war</i> file to the webapps folder of Tomcat (`/var/lib/tomcat7/webapps`) onto your Raspberry Pi or, if configured, use the Tomcat manager (`http://raspberrypi:8080/manager/`) to deploy the <i>datalogger.war</i> file.
