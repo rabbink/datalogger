@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:d="http://www.mycompany.com/datalogger">
+    <h:head>
+        <title>Datalogger</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <h:outputStylesheet name="css/bootstrap.css" />
+        <h:outputStylesheet name="css/dataTables.bootstrap.css" />
+        <h:outputStylesheet name="css/datalogger.css" />
+    </h:head>
+    <h:body>
+        <div class="container">
+            <div class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Datalogger</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.jsf">Graph</a></li>
+                        <li><a href="table.jsf">Table</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active"><a href="config.jsf">Config</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h:form>
+                        <p>Next capture at: <h:outputText value="#{settingBean.nextCapture}">
+                                <f:convertDateTime type="both" /></h:outputText></p>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs" disabled="disabled">
+                                <span class="glyphicon glyphicon-play"></span> Start
+                            </button>
+                            <button type="button" class="btn btn-default  btn-xs">
+                                <span class="glyphicon glyphicon-stop"></span> Stop
+                            </button>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Settings</h3>
+                </div>
+                <div class="panel-body">
+                    <h:form>
+                        <div class="form-group">
+                            <h:outputLabel for="setting-capturePeriod"  class="control-label">Capture period</h:outputLabel>
+                            <h:selectOneMenu id="setting-capturePeriod" class="form-control" value="#{settingBean.capturePeriod}" >
+                                <f:selectItem itemValue="15" itemLabel="15 minutes" />
+                                <f:selectItem itemValue="5" itemLabel="5 minutes"  />
+                            </h:selectOneMenu>
+                        </div>
+
+                        <h:commandButton action="./" type="submit" class="btn btn-default" value="Save" />
+
+                        <!--div class="form-group">
+                            <h:outputLabel for="capturePeriod" >Capture period</h:outputLabel>
+                            <d:customSelectOneRadio id="capturePeriod" class="radio" value="#{settingBean.capturePeriod}">
+                                <f:selectItem itemValue="5" itemLabel="5 minutes" />
+                                <f:selectItem itemValue="15" itemLabel="15 minutes" />
+                            </d:customSelectOneRadio>
+                        <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="5" checked="true"/>
+                            Option one is this and that
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="15"/>
+                            Option two can be something else and selecting it will deselect option one
+                        </label>
+                    </div>
+                        </div-->
+                    </h:form>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Generate readings</h3>
+                </div>
+                <div class="panel-body">
+                    <p>Use this option to generate readings for a given time and capture period. 
+                        All the generated readings will have a timestamp before the earliest reading available in the database.</p>
+                    <h:form id="generate-form">
+                        <div class="form-group">
+                            <h:outputLabel for="generate-timePeriod">Time period</h:outputLabel>
+                            <h:selectOneMenu id="generate-timePeriod" class="form-control" value="#{settingBean.timePeriod}">
+                                <f:selectItem itemValue="day" itemLabel="1 day" />
+                                <f:selectItem itemValue="month" itemLabel="1 month" />
+                                <f:selectItem itemValue="year" itemLabel="1 year" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="generate-capturePeriod">Capture period</h:outputLabel>
+                            <h:selectOneMenu id="generate-capturePeriod" class="form-control" value="#{settingBean.capturePeriod}" >
+                                <f:selectItem itemValue="15" itemLabel="15 minutes" />
+                                <f:selectItem itemValue="5" itemLabel="5 minutes"  />
+                            </h:selectOneMenu>
+                        </div>
+                        <h:commandButton action="#{settingBean.generateReadings()}" type="submit" class="btn btn-default" value="Generate" />
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <h:outputScript name="js/jquery.min.js" />
+        <h:outputScript name="js/jquery.dataTables.min.js" />
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <h:outputScript name="js/bootstrap.min.js" />
+        <h:outputScript name="js/dataTables.bootstrap.js" />
+    </h:body>
+</html>

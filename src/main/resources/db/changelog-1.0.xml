@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="1" author="rabbink">
+        <!--preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="READING"/>
+            </not>
+        </preConditions-->
+        <createTable tableName="reading">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="timestamp" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="reading" indexName="idx_timestamp" unique="false">
+            <column name="timestamp" type="timestamp"/>
+        </createIndex>
+        <sql>
+            <![CDATA[
+            CREATE INDEX idx_timestamp_d ON reading(timestamp DESC)
+            ]]>
+        </sql>
+        <createIndex tableName="reading" indexName="idx_value" unique="false">
+            <column name="value" type="value"/>
+        </createIndex>
+        <sql>
+            <![CDATA[
+            CREATE INDEX idx_value_d ON reading(value DESC)
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/datalogger">    
+    <Resource
+        type="javax.sql.DataSource"
+        name="jdbc/datalogger" 
+        driverClassName="org.h2.Driver"
+        url="jdbc:h2:~/DataLoggerDB"
+        username="sa" 
+        password="sa"
+        maxActive="50" maxIdle="30" maxWait="10000"        
+    />
+</Context>
