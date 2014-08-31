@@ -31,12 +31,7 @@ public class ReadingsResource {
     public String getGraphReadings(@QueryParam("start") Long start, @QueryParam("end") Long end) {
         DAO readingDao = ReadingDAO.getInstance();
 
-        List<Reading> readings;
-        if (start != null && end != null) {
-            readings = readingDao.list(start, end);
-        } else {
-            readings = readingDao.list();
-        }
+        List<Reading> readings = readingDao.list();
 
         List<List> data = new ArrayList<>();
         for (Reading reading : readings) {

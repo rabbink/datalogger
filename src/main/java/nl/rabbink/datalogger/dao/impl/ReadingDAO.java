@@ -41,27 +41,7 @@ public class ReadingDAO extends DAO<Reading> {
         List<Reading> readings = new ArrayList<>();
         try (Connection db = getConnection()) {
             db.setReadOnly(true);
-            try (PreparedStatement ps = db.prepareStatement("select * from reading order by timestamp desc")) {
-                ResultSet resultSet = ps.executeQuery();
-                while (resultSet.next()) {
-                    readings.add(map(resultSet));
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ReadingDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return readings;
-    }
-
-    @Override
-    public List<Reading> list(Long start, Long end) {
-        List<Reading> readings = new ArrayList<>();
-        try (Connection db = getConnection()) {
-            db.setReadOnly(true);
-            try (PreparedStatement ps = db.prepareStatement("select * from reading where timestamp between ? and ? order by id")) {
-                ps.setTimestamp(1, new java.sql.Timestamp(start));
-                ps.setTimestamp(2, new java.sql.Timestamp(end));
+            try (PreparedStatement ps = db.prepareStatement("select * from reading where timestamp > DATEADD('DAY',-1, NOW()) order by TIMESTAMP")) {
                 ResultSet resultSet = ps.executeQuery();
                 while (resultSet.next()) {
                     readings.add(map(resultSet));

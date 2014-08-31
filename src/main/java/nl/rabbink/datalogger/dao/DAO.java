@@ -31,8 +31,6 @@ public abstract class DAO<T> {
     public abstract void insert(T t);
 
     public abstract List<? extends T> list();
-
-    public abstract List<? extends T> list(Long start, Long end);
     
     public abstract void update(T t);
 
