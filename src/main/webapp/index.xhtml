@@ -12,10 +12,10 @@
         <h:outputStylesheet name="css/datalogger.css" />
     </h:head>
     <h:body>
-        <div class="container">
-            <div class="navbar navbar-default" role="navigation">
+        <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+            <div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -23,20 +23,60 @@
                     </button>
                     <a class="navbar-brand" href="#">Datalogger</a>
                 </div>
-                <div class="navbar-collapse collapse">
+                <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="./">Graph</a></li>
+                        <li class="active"><a href="#">Graph</a></li>
                         <li><a href="table.jsf">Table</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="config.jsf">Config</a></li>
+                        <li><a href="settings.jsf">Settings</a></li>
                     </ul>
-                </div>
-            </div>
-            <div style="width:100%;min-height: 350px;">
-                <div id="graph-container" style="height: 350px"></div>
-            </div>
-        </div>
+                </div><!-- /.nav-collapse -->
+            </div><!-- /.container -->
+        </div><!-- /.navbar -->
+
+        <div class="container">
+            <div class="row row-offcanvas row-offcanvas-right">
+                <div class="col-xs-12 col-sm-9">
+                    <p class="pull-right visible-xs">
+                        <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+                    </p>
+                    <div style="width:100%;min-height: 350px;">
+                        <div id="graph-container" style="height: 350px"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-sm-6 col-lg-4">
+                            <h2>Heading</h2>
+                            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                            <p><a class="btn btn-default" href="#" role="button">View details </a></p>
+                        </div><!--/span-->
+                        <div class="col-6 col-sm-6 col-lg-4">
+                            <h2>Heading</h2>
+                            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                            <p><a class="btn btn-default" href="#" role="button">View details </a></p>
+                        </div><!--/span-->
+                    </div><!--/row-->
+                </div><!--/span-->
+
+                <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+                    <h:form id="list-form">
+                    <div class="list-group">
+                        <h:commandLink action="#{graphBean.setToLast24Hours()}" class="list-group-item active">
+                        <f:ajax render=":graph-container" />
+                            Last 24h
+                        </h:commandLink>
+                        <h:commandLink action="#{graphBean.setToLast2Days()}" class="list-group-item">
+                        <f:ajax render=":graph-container" />
+                            Last 2 days
+                        </h:commandLink>
+                        <a href="#" class="list-group-item">Last week</a>
+                        <a href="#" class="list-group-item">Last month</a>
+                        <a href="#" class="list-group-item">Last year</a>
+                    </div>
+                    </h:form>
+                </div><!--/span-->
+            </div><!--/row-->
+        </div><!--/.container-->
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <h:outputScript name="js/jquery.min.js" />
@@ -53,8 +93,8 @@
 
             $.getJSON('resources/readings/graph', function(data) {
 
-                    // draw chart
-                    $('#graph-container').highcharts({
+                // draw chart
+                $('#graph-container').highcharts({
                     title: {
                         text: "Temperature of the last 24 hours"
                     },
@@ -62,7 +102,7 @@
                         type: 'datetime',
                         dateTimeLabelFormats: {
                             hour: '%H. %M'
-                        }   
+                        }
                     },
                     yAxis: {
                         title: {
@@ -84,10 +124,10 @@
                         formatter: function() {
                             return Highcharts.dateFormat('%H:%M', this.x) + ': ' + this.y.toFixed(2) + '°C';
                         }
-                    }, 
+                    },
                     series: [{
-                        data: data
-                    }]
+                            data: data
+                        }]
                 });
             });
         </script>

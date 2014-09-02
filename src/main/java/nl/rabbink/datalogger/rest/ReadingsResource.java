@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import nl.rabbink.datalogger.GraphBean;
 import nl.rabbink.datalogger.dao.DAO;
 import nl.rabbink.datalogger.dao.impl.ReadingDAO;
 import nl.rabbink.datalogger.model.Reading;
@@ -21,7 +22,7 @@ import nl.rabbink.datalogger.model.Result;
 
 @Path("readings")
 public class ReadingsResource {
-
+    
     @Context
     private ServletContext context;
 
@@ -29,6 +30,16 @@ public class ReadingsResource {
     @Path("/graph")
     @Produces(MediaType.APPLICATION_JSON)
     public String getGraphReadings(@QueryParam("start") Long start, @QueryParam("end") Long end) {
+        GraphBean graphBean = (GraphBean)context.getAttribute("graphBean");
+        
+        if(graphBean == null) {
+            graphBean = new GraphBean();
+            context.setAttribute("graphBean", graphBean);
+        } else {
+            GraphBean.Mode mode = graphBean.getMode();
+            System.out.println(mode);            
+        }
+        
         DAO readingDao = ReadingDAO.getInstance();
 
         List<Reading> readings = readingDao.list();
