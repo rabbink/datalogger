@@ -6,16 +6,12 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.ServletContext;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import nl.rabbink.datalogger.GraphBean;
-import nl.rabbink.datalogger.dao.DAO;
 import nl.rabbink.datalogger.dao.impl.ReadingDAO;
 import nl.rabbink.datalogger.model.Reading;
 import nl.rabbink.datalogger.model.Result;
@@ -23,26 +19,14 @@ import nl.rabbink.datalogger.model.Result;
 @Path("readings")
 public class ReadingsResource {
     
-    @Context
-    private ServletContext context;
-
     @GET
     @Path("/graph")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getGraphReadings(@QueryParam("start") Long start, @QueryParam("end") Long end) {
-        GraphBean graphBean = (GraphBean)context.getAttribute("graphBean");
-        
-        if(graphBean == null) {
-            graphBean = new GraphBean();
-            context.setAttribute("graphBean", graphBean);
-        } else {
-            GraphBean.Mode mode = graphBean.getMode();
-            System.out.println(mode);            
-        }
-        
-        DAO readingDao = ReadingDAO.getInstance();
+    public String getGraphReadings(@DefaultValue("LAST_24H") @QueryParam("mode") Mode mode) {
+        System.out.println(mode);
+        ReadingDAO readingDao = ReadingDAO.getInstance();
 
-        List<Reading> readings = readingDao.list();
+        List<Reading> readings = readingDao.list(mode);
 
         List<List> data = new ArrayList<>();
         for (Reading reading : readings) {
@@ -125,5 +109,9 @@ public class ReadingsResource {
         public List<List> getAaData() {
             return aaData;
         }
+    }
+    
+    public enum Mode {
+        LAST_24H, LAST_2DAYS, LAST_WEEK, LAST_MONTH, LAST_YEAR;
     }
 }

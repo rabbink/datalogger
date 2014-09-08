@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import nl.rabbink.datalogger.dao.DAO;
 import nl.rabbink.datalogger.model.Reading;
 import nl.rabbink.datalogger.model.Result;
+import nl.rabbink.datalogger.rest.ReadingsResource;
 import nl.rabbink.datalogger.rest.SortOrder;
 import nl.rabbink.datalogger.rest.TableColumn;
 
@@ -54,6 +55,44 @@ public class ReadingDAO extends DAO<Reading> {
         return readings;
     }
 
+    public List<Reading> list(ReadingsResource.Mode mode) {
+        String sql;
+        switch (mode) {
+            case LAST_24H:
+                sql = "select * from reading where timestamp > DATEADD('DAY',-1, NOW()) order by TIMESTAMP";
+                break;
+            case LAST_2DAYS:
+                sql = "select * from reading where timestamp > DATEADD('DAY',-2, NOW()) order by TIMESTAMP";
+                break;
+            case LAST_WEEK:
+                sql = "select * from reading where timestamp > DATEADD('WEEK',-1, NOW()) order by TIMESTAMP";
+                break;
+            case LAST_MONTH:
+                sql = "select * from reading where timestamp > DATEADD('MONTH',-1, NOW()) order by TIMESTAMP";
+                break;
+            case LAST_YEAR:
+                sql = "select * from reading where timestamp > DATEADD('YEAR',-1, NOW()) order by TIMESTAMP";
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported mode " + mode);
+        }
+
+        List<Reading> readings = new ArrayList<>();
+        try (Connection db = getConnection()) {
+            db.setReadOnly(true);
+            try (PreparedStatement ps = db.prepareStatement(sql)) {
+                ResultSet resultSet = ps.executeQuery();
+                while (resultSet.next()) {
+                    readings.add(map(resultSet));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ReadingDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return readings;
+    }
+
     public Result list(int limit, int offset, TableColumn orderBy, SortOrder sortOrder) {
         Result<Reading> result = new Result();
         try (Connection db = getConnection()) {
@@ -84,9 +123,9 @@ public class ReadingDAO extends DAO<Reading> {
                         result.getValues().add(map(resultSet));
                     }
                 }
-                
+
                 db.commit();
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 System.out.println("Transaction being rolled back");
                 db.rollback();
                 throw e;

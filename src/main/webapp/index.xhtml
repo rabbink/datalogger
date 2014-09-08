@@ -61,17 +61,11 @@
                 <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                     <h:form id="list-form">
                     <div class="list-group">
-                        <h:commandLink action="#{graphBean.setToLast24Hours()}" class="list-group-item active">
-                        <f:ajax render=":graph-container" />
-                            Last 24h
-                        </h:commandLink>
-                        <h:commandLink action="#{graphBean.setToLast2Days()}" class="list-group-item">
-                        <f:ajax render=":graph-container" />
-                            Last 2 days
-                        </h:commandLink>
-                        <a href="#" class="list-group-item">Last week</a>
-                        <a href="#" class="list-group-item">Last month</a>
-                        <a href="#" class="list-group-item">Last year</a>
+                        <a id="last_24h" href="#" class="list-group-item active">Last 24 hours</a>
+                        <a id="last_2days" href="#" class="list-group-item">Last 2 days</a>
+                        <a id="last_week" href="#" class="list-group-item">Last week</a>
+                        <!--a id="last_month" href="#" class="list-group-item">Last month</a>
+                        <a id="last_year" href="#" class="list-group-item">Last year</a-->
                     </div>
                     </h:form>
                 </div><!--/span-->
@@ -85,16 +79,19 @@
         <h:outputScript name="js/highcharts.js" />
 
         <script type="text/javascript" charset="utf-8">
+            // TODO refactor all datalogger specific javascript to proper javascript/jquery usage
             Highcharts.setOptions({
                 global: {
                     useUTC: false
                 }
             });
 
-            $.getJSON('resources/readings/graph', function(data) {
+            $(document).ready(function() {
 
-                // draw chart
-                $('#graph-container').highcharts({
+                var options = {
+                    chart: {
+                        renderTo: 'graph-container'
+                    },
                     title: {
                         text: "Temperature of the last 24 hours"
                     },
@@ -124,10 +121,59 @@
                         formatter: function() {
                             return Highcharts.dateFormat('%H:%M', this.x) + ': ' + this.y.toFixed(2) + '°C';
                         }
-                    },
-                    series: [{
-                            data: data
-                        }]
+                    },                    
+                    
+                    series: [{}]
+                };
+
+                $.getJSON('resources/readings/graph', function(data) {
+                    options.series[0].data = data;
+                    var chart = new Highcharts.Chart(options);
+                    
+                    $('#last_24h').click(function() {
+                        $('#sidebar a').removeClass('active');
+                        $('#last_24h').addClass('active');
+                        $.getJSON('resources/readings/graph', function(data) {
+                            chart.setTitle({text: 'Last 24 hours'});
+                            chart.series[0].setData(data);
+                        });
+                    });
+                    
+                    $('#last_2days').click(function() {
+                        $('#sidebar a').removeClass('active');
+                        $('#last_2days').addClass('active');
+                        $.getJSON('resources/readings/graph?mode=LAST_2DAYS', function(data) {
+                            chart.setTitle({text: 'Last 2 days'});
+                            chart.series[0].setData(data);
+                        });
+                    });
+                    
+                    $('#last_week').click(function() {
+                        $('#sidebar a').removeClass('active');
+                        $('#last_week').addClass('active');
+                        $.getJSON('resources/readings/graph?mode=LAST_WEEK', function(data) {
+                            chart.setTitle({text: 'Last week'});
+                            chart.series[0].setData(data);
+                        });
+                    });
+                    
+                    $('#last_month').click(function() {
+                        $('#sidebar a').removeClass('active');
+                        $('#last_month').addClass('active');
+                        $.getJSON('resources/readings/graph?mode=LAST_MONTH', function(data) {
+                            chart.setTitle({text: 'Last month'});
+                            chart.series[0].setData(data);
+                        });
+                    });
+                    
+                    $('#last_year').click(function() {
+                        $('#sidebar a').removeClass('active');
+                        $('#last_year').addClass('active');
+                        $.getJSON('resources/readings/graph?mode=LAST_YEAR', function(data) {
+                            chart.setTitle({text: 'Last year'});
+                            chart.series[0].setData(data);
+                        });
+                    });
                 });
             });
         </script>
